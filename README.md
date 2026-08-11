@@ -2,7 +2,7 @@
 
 Can you guess a chess player's rating band just from how a game was played, without looking at their actual rating?
 
-This project uses the [60,000+ Chess.com Games](https://www.kaggle.com/datasets) dataset (Kaggle, CC0) and predicts a rating band (under 1000, 1000-1400, 1400-1800, 1800+) from game metadata like time control, format, and how the game ended, instead of predicting a rating from a rating.
+This project uses the [60,000+ Chess.com Games](https://www.kaggle.com/datasets/adityajha1504/chesscom-user-games-60000-games) dataset (Kaggle, CC0) and predicts a rating band (under 1000, 1000-1400, 1400-1800, 1800+) from game metadata like time control, format, and how the game ended, instead of predicting a rating from a rating.
 
 ## Key finding
 
@@ -20,7 +20,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Download `club_games_data.csv` from Kaggle and place it in `data/` (not tracked in git). Then open `notebooks/elosense.ipynb` and run top to bottom.
+Download `club_games_data.csv` from [Kaggle](https://www.kaggle.com/datasets/adityajha1504/chesscom-user-games-60000-games) and place it in `data/` (not tracked in git). Then open `notebooks/elosense.ipynb` and run top to bottom.
 
 ## What's in the notebook
 
