@@ -4,3 +4,4 @@ scikit-learn==1.9.0
 matplotlib==3.11.1
 seaborn==0.13.2
 jupyter==1.1.1
+python-chess==1.11.2
