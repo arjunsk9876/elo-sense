@@ -14,7 +14,7 @@ A model can guess a player's rating band with about 86% accuracy, but almost all
 
 ## v2: PGN features
 
-Follow-on notebook, `notebooks/elosense_pgn_features.ipynb`, that parses the raw PGN move data with `python-chess` and tests whether "how the game was actually played" (opening, game length, material swings, time spent per move) predicts skill better than metadata alone.
+Follow-on notebook, `notebooks/elosense_v2.ipynb`, that parses the raw PGN move data with `python-chess` and tests whether "how the game was actually played" (opening, game length, material swings, time spent per move) predicts skill better than metadata alone.
 
 With the opponent's rating band excluded from both, move-level features hit 42.8% accuracy vs metadata's 39.3%, and combining the two gets to 45.9%. Move-level data does carry more skill signal than plain metadata, but it doesn't come close to the 86% the model gets once it can see the opponent's rating band, matchmaking correlation is still the dominant signal in this dataset.
 
@@ -30,10 +30,10 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Download `club_games_data.csv` from [Kaggle](https://www.kaggle.com/datasets/adityajha1504/chesscom-user-games-60000-games) and place it in `data/` (not tracked in git). Then open `notebooks/elosense.ipynb` and run top to bottom.
+Download `club_games_data.csv` from [Kaggle](https://www.kaggle.com/datasets/adityajha1504/chesscom-user-games-60000-games) and place it in `data/` (not tracked in git). Then open `notebooks/elosense_v1.ipynb` and run top to bottom.
 
 ## What's in the notebooks
 
-`notebooks/elosense.ipynb` goes through the core project in order: loading the data, checking for nulls and duplicates, exploring rating and result distributions, bucketing ratings into bands, encoding features, testing for leakage, training a baseline and an improved model, comparing them, and writing up the findings.
+`notebooks/elosense_v1.ipynb` goes through the core project in order: loading the data, checking for nulls and duplicates, exploring rating and result distributions, bucketing ratings into bands, encoding features, testing for leakage, training a baseline and an improved model, comparing them, and writing up the findings.
 
-`notebooks/elosense_pgn_features.ipynb` is the follow-on v2 notebook described above, it parses PGN move data and tests move-level features against the v1 metadata baseline.
+`notebooks/elosense_v2.ipynb` is the follow-on v2 notebook described above, it parses PGN move data and tests move-level features against the v1 metadata baseline.
