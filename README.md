@@ -22,6 +22,16 @@ Extracted features are cached in `features/pgn_features.csv` so the ~5 minute fu
 
 ![PGN feature importance](images/pgn_feature_importance.png)
 
+## v3: honest evaluation and beyond
+
+v1 and v2 both used a plain random train/test split with no grouping by player, so the same player could show up in both sides. `notebooks/elosense_v3.ipynb` fixes that with a player-disjoint split (no player's games appear on both sides), and rebuilds on top of the corrected baseline.
+
+The leak mattered: under the honest split, metadata-only collapses from v2's 39.3% to 27.5% (barely above the 25% random baseline), and PGN features turn out to be the real, generalizable signal. From there, v3 adds player-level feature aggregation, Stockfish-derived centipawn-loss features, an ordinal (regress-then-bin) framing instead of plain classification, and swaps in LightGBM. The final config gets **48.8% accuracy** and **0.564 mean absolute band error** on players the model never trained on, actually beating v2's leaky 45.9% despite the honest split being a strictly harder test.
+
+![Ordinal vs multiclass framing](images/v3_ordinal_vs_multiclass.png)
+
+![CPL feature importance](images/v3_cpl_feature_importance.png)
+
 ## How to run
 
 ```
@@ -37,3 +47,5 @@ Download `club_games_data.csv` from [Kaggle](https://www.kaggle.com/datasets/adi
 `notebooks/elosense_v1.ipynb` goes through the core project in order: loading the data, checking for nulls and duplicates, exploring rating and result distributions, bucketing ratings into bands, encoding features, testing for leakage, training a baseline and an improved model, comparing them, and writing up the findings.
 
 `notebooks/elosense_v2.ipynb` is the follow-on v2 notebook described above, it parses PGN move data and tests move-level features against the v1 metadata baseline.
+
+`notebooks/elosense_v3.ipynb` is the v3 notebook described above. It doesn't touch v1 or v2, it re-derives its own honest baseline under a player-disjoint split and builds forward from there. Reproducing the Stockfish centipawn-loss section requires `stockfish` on PATH (`brew install stockfish`), but the extracted features are cached in `features/cpl_features_v3.csv` and `features/pgn_features_v3.csv` so that step doesn't need to be re-run to read the notebook's results.
