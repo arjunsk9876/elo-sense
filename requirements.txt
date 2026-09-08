@@ -6,3 +6,4 @@ seaborn==0.13.2
 jupyter==1.1.1
 python-chess==1.11.2
 lightgbm==4.7.0
+scipy==1.18.0

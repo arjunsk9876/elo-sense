@@ -32,6 +32,18 @@ The leak mattered: under the honest split, metadata-only collapses from v2's 39.
 
 ![CPL feature importance](images/v3_cpl_feature_importance.png)
 
+## v4: chess form volatility
+
+Different question from v1-v3: not what a player's skill level is, but how erratic their current performance is, separate from skill. `notebooks/elosense_v4.ipynb` treats that as a hidden state (`h_t`, log-volatility of the per-game "surprise" signal, actual score minus Elo-expected score) and estimates it with a bootstrap particle filter and Particle Marginal Metropolis-Hastings (PMMH), the same machinery quant finance uses for stochastic volatility in asset returns.
+
+Median games-per-player in this dataset is 1, so a single-player PMMH fit has almost nothing to work with on its own, single-player runs here show `sigma_eta` (how fast volatility itself drifts) collapsing toward 0 for lack of data. That makes the hierarchical extension from the project spec not optional: pooling 40 players spanning 8-200+ games through a Gibbs-within-Metropolis sampler with population-level priors gets a much more plausible `sigma_eta ~= 0.20`, instead of collapsing.
+
+Feeding population-parameter volatility summary stats (computed cheaply for every player from the pooled `theta`, not a per-player PMMH fit) into v3's player-level rating-band classifier gives a modest lift: 59.8% vs 57.9% accuracy with volatility features excluded, inside one standard deviation of each other across seeds. Correlation between volatility and rating band is real but weak (Spearman r ~0.10-0.18) and not monotonic across bands. Net finding: population-level volatility is a small, secondary signal on top of the existing PGN features, not a standalone predictor, per-player fitted volatility (not built here, PMMH's compute cost doesn't scale past a few dozen players in this notebook's budget) is the more promising follow-up.
+
+![Single-player h_t path](images/v4_aalisyed_hpath.png)
+
+![Hierarchical convergence](images/v4_hierarchical_convergence.png)
+
 ## How to run
 
 ```
@@ -49,3 +61,5 @@ Download `club_games_data.csv` from [Kaggle](https://www.kaggle.com/datasets/adi
 `notebooks/elosense_v2.ipynb` is the follow-on v2 notebook described above, it parses PGN move data and tests move-level features against the v1 metadata baseline.
 
 `notebooks/elosense_v3.ipynb` is the v3 notebook described above. It doesn't touch v1 or v2, it re-derives its own honest baseline under a player-disjoint split and builds forward from there. Reproducing the Stockfish centipawn-loss section requires `stockfish` on PATH (`brew install stockfish`), but the extracted features are cached in `features/cpl_features_v3.csv` and `features/pgn_features_v3.csv` so that step doesn't need to be re-run to read the notebook's results.
+
+`notebooks/elosense_v4.ipynb` is the v4 notebook described above. It reuses v3's cached player-disjoint split and PGN feature aggregation (`features/pgn_features_v3.csv`) instead of recomputing them, but everything else (the particle filter, PMMH, hierarchical pooling, volatility features) is self-contained in the notebook, no separate cache needed since it's all fast enough to run inline.
